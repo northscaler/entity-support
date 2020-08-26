@@ -44,6 +44,7 @@ const Treeness = Trait(
         if (this._parent)
           throw new IllegalArgumentError({ message: 'this already has parent' })
         if (!parent) throw new MissingRequiredArgumentError({ info: 'parent' })
+        this._confirmIsThisType(parent)
         if (parent.identifies(this))
           throw new TreeCircularityError({ message: 'parent is child' })
         if (this.containsChild(parent, true))
@@ -59,6 +60,14 @@ const Treeness = Trait(
 
       _doSetParent (parent) {
         this._parent = parent
+      }
+
+      _confirmIsThisType (that) {
+        if (Object.getPrototypeOf(this) !== Object.getPrototypeOf(that))
+          throw new IllegalArgumentError({
+            info: that,
+            message: 'node must be the same type of object as this'
+          })
       }
 
       unsetParent () {
@@ -101,6 +110,8 @@ const Treeness = Trait(
 
       addChild (child) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
+        this._confirmIsThisType(child)
+
         child.parent = this // delegate to setter
         return this
       }

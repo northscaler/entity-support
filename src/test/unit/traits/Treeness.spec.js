@@ -63,5 +63,12 @@ describe('unit tests of Treeness', () => {
     expect(root.removeChild(a2)).to.equal(root)
     expect(root.childCount).to.equal(1)
     expect(root.children[0]).to.equal(a1)
+
+    class NotNode {}
+
+    expect(() => root.addChild(new NotNode())).to.throw(IllegalArgumentError)
+    expect(() => {
+      root.parent = new NotNode()
+    }).to.throw(IllegalArgumentError)
   })
 })
