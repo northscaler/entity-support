@@ -3,8 +3,7 @@
 const { Trait } = require('@northscaler/mutrait')
 const {
   IllegalArgumentError,
-  MissingRequiredArgumentError,
-  IllegalStateError
+  MissingRequiredArgumentError
 } = require('@northscaler/error-support')
 const { TreeCircularityError } = require('../errors')
 
@@ -43,7 +42,7 @@ const Treeness = Trait(
 
       _testSetParent (parent) {
         if (this._parent)
-          throw new IllegalStateError({ message: 'this already has parent' })
+          throw new IllegalArgumentError({ message: 'this already has parent' })
         if (!parent) throw new MissingRequiredArgumentError({ info: 'parent' })
         if (parent.identifies(this))
           throw new TreeCircularityError({ message: 'parent is child' })

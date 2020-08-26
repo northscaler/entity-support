@@ -10,8 +10,7 @@ const { traits } = require('@northscaler/mutrait')
 const { Treeness } = require('../../../main/traits')
 const {
   IllegalArgumentError,
-  MissingRequiredArgumentError,
-  IllegalStateError
+  MissingRequiredArgumentError
 } = require('@northscaler/error-support')
 const { TreeCircularityError } = require('../../../main/errors')
 
@@ -50,7 +49,7 @@ describe('unit tests of Treeness', () => {
     expect(() => root.addChild()).to.throw(MissingRequiredArgumentError)
     expect(() => root.addChild(root)).to.throw(TreeCircularityError)
     expect(() => a1.addChild(root)).to.throw(TreeCircularityError)
-    expect(() => a1.addChild(a2)).to.throw(IllegalStateError)
+    expect(() => a1.addChild(a2)).to.throw(IllegalArgumentError)
 
     const a1b1 = new Node({ parent: a1, name: 'a1b1' })
     expect(root.containsChild(a1b1)).to.be.false()
