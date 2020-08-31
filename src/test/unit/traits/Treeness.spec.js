@@ -33,6 +33,8 @@ describe('unit tests of Treeness', () => {
 
     const root = new Node({ name: 'root' })
     expect(root.allChildren).to.deep.equal([])
+    expect(root.asList(it => it.name)).to.deep.equal([root.name])
+    expect(root.asObjectByProperty('id')).to.deep.equal({ [root.id]: root })
 
     const a1 = new Node({ parent: root, name: 'a1' })
     expect(root.containsChild(a1)).to.be.true()
@@ -46,6 +48,10 @@ describe('unit tests of Treeness', () => {
         .map(it => it.name)
         .sort()
     ).to.deep.equal(['a1', 'root'])
+    expect(root.asObjectByProperty('id')).to.deep.equal({
+      [root.id]: root,
+      [a1.id]: a1
+    })
 
     const a2 = new Node({ parent: root, name: 'a2' })
     expect(root.containsChild(a2)).to.be.true()
@@ -59,6 +65,11 @@ describe('unit tests of Treeness', () => {
         .map(it => it.name)
         .sort()
     ).to.deep.equal(['a1', 'a2', 'root'])
+    expect(root.asObjectByProperty('id')).to.deep.equal({
+      [root.id]: root,
+      [a1.id]: a1,
+      [a2.id]: a2
+    })
 
     expect(() => root.addChild()).to.throw(MissingRequiredArgumentError)
     expect(() => root.addChild(root)).to.throw(TreeCircularityError)
@@ -77,6 +88,12 @@ describe('unit tests of Treeness', () => {
         .map(it => it.name)
         .sort()
     ).to.deep.equal(['a1', 'a1b1', 'a2', 'root'])
+    expect(root.asObjectByProperty('id')).to.deep.equal({
+      [root.id]: root,
+      [a1.id]: a1,
+      [a2.id]: a2,
+      [a1b1.id]: a1b1
+    })
 
     expect(root.asList(it => it.name).sort()).to.deep.equal([
       'a1',

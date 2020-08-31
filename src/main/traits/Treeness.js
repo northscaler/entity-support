@@ -181,6 +181,13 @@ const Treeness = Trait(
           [nodeTransformerFn(this)]
         )
       }
+
+      asObjectByProperty (propertyName, nodeTransformerFn) {
+        return this.asList(nodeTransformerFn).reduce((object, node) => {
+          object[node[propertyName]] = node
+          return object
+        }, {})
+      }
     }
 )
 
