@@ -5,6 +5,9 @@ const Period = require('./Period')
 const TimeUnit = require('../enums/TimeUnit')
 const { IllegalArgumentError } = require('@northscaler/error-support')
 
+/**
+ * @deprecated Use https://moment.github.io/luxon/docs/class/src/interval.js~Interval.html if you can.
+ */
 class DatePeriod extends Period {
   static beginningAtWithDays (begin, days) {
     return new DatePeriod(

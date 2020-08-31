@@ -4,6 +4,9 @@ const moment = require('moment-timezone')
 const TimeUnit = require('../enums/TimeUnit')
 const { IllegalArgumentError } = require('@northscaler/error-support')
 
+/**
+ * @deprecated Use https://moment.github.io/luxon/docs/class/src/interval.js~Interval.html if you can.
+ */
 class Period {
   static beginningAtWithMinutes (begin, minutes) {
     return new Period(

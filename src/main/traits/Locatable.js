@@ -1,17 +1,15 @@
-'use strict'
-
 const { Trait } = require('@northscaler/mutrait')
 const property = require('@northscaler/property-decorator')
 
 /**
- * Imparts a `name` property with backing property `_name`.
+ * Imparts a `location` property with backing property `_location`.
  */
-const Nameable = Trait(
+const Locatable = Trait(
   superclass =>
     class extends superclass {
       @property()
-      _name
+      _location
     }
 )
 
-module.exports = Nameable
+module.exports = Locatable

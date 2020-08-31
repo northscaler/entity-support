@@ -21,7 +21,7 @@ describe('unit tests of Recurrence', function () {
       .withDaysOfWeek(daysOfWeek)
       .withMonths(months)
 
-    expect(r._toRecurrify()).to.deep.equal({
+    expect(r.toRecurrify()).to.deep.equal({
       m: minutes,
       h: hours,
       dw: daysOfWeek.map(it => it.ordinal),
@@ -29,7 +29,7 @@ describe('unit tests of Recurrence', function () {
     })
 
     r.months = null
-    expect(r._toRecurrify()).to.deep.equal({
+    expect(r.toRecurrify()).to.deep.equal({
       m: minutes,
       h: hours,
       dw: daysOfWeek.map(it => it.ordinal)

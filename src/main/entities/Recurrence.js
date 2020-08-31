@@ -5,9 +5,12 @@ const ALL_HOURS = Object.freeze(
     .fill(0)
     .map((it, i) => i)
 )
-const ALL_MINUTES = Array(60)
-  .fill(0)
-  .map((it, i) => i)
+
+const ALL_MINUTES = Object.freeze(
+  Array(60)
+    .fill(0)
+    .map((it, i) => i)
+)
 
 const arrayify = it => {
   if (it === null || it === undefined) return it
@@ -100,11 +103,21 @@ class Recurrence {
     return this
   }
 
-  _toRecurrify () {
-    return Recurrence._toRecurrifyFormat(this)
+  /**
+   * Returns this recurrence in a form suitable for use with `@northscaler/recurrify`.
+   * @return {string}
+   * @see https://www.npmjs.com/package/@northscaler/recurrify
+   */
+  toRecurrify () {
+    return Recurrence.toRecurrifyFormat(this)
   }
 
-  static _toRecurrifyFormat (recurrence) {
+  /**
+   * Returns the given recurrence in a form suitable for use with `@northscaler/recurrify`.
+   * @return {string}
+   * @see https://www.npmjs.com/package/@northscaler/recurrify
+   */
+  static toRecurrifyFormat (recurrence) {
     let daysOfWeek
     if (recurrence.daysOfWeek) {
       daysOfWeek = recurrence.daysOfWeek.map(day => day.ordinal)
@@ -121,6 +134,7 @@ class Recurrence {
       dc: recurrence.dayOfWeekCounts,
       M: recurrence.months
     }
+
     return Object.keys(recurrences).reduce((accum, it) => {
       if (recurrences[it] === null || recurrences[it] === undefined)
         delete recurrences[it]

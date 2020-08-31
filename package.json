@@ -123,6 +123,12 @@
         {
           "loose": false
         }
+      ],
+      [
+        "@babel/plugin-proposal-nullish-coalescing-operator",
+        {
+          "loose": false
+        }
       ]
     ]
   },
