@@ -169,6 +169,18 @@ const Treeness = Trait(
           [...this._children]
         )
       }
+
+      asList (nodeTransformerFn) {
+        nodeTransformerFn = nodeTransformerFn || (it => it)
+
+        return (this._children || []).reduce(
+          (accum, child) => {
+            accum = accum.concat(child.asList(nodeTransformerFn))
+            return accum
+          },
+          [nodeTransformerFn(this)]
+        )
+      }
     }
 )
 
