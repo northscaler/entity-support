@@ -33,8 +33,8 @@ describe('unit tests of Treeness', () => {
 
     const root = new Node({ name: 'root' })
     expect(root.allChildren).to.deep.equal([])
-    expect(root.asList(it => it.name)).to.deep.equal([root.name])
-    expect(root.asObjectByProperty('id')).to.deep.equal({ [root.id]: root })
+    expect(root.asNodeList(it => it.name)).to.deep.equal([root.name])
+    expect(root.asNodeMapByProperty('id')).to.deep.equal({ [root.id]: root })
 
     const a1 = new Node({ parent: root, name: 'a1' })
     expect(root.containsChild(a1)).to.be.true()
@@ -44,11 +44,11 @@ describe('unit tests of Treeness', () => {
     expect(root.allChildren).to.deep.equal([a1])
     expect(
       root
-        .asList()
+        .asNodeList()
         .map(it => it.name)
         .sort()
     ).to.deep.equal(['a1', 'root'])
-    expect(root.asObjectByProperty('id')).to.deep.equal({
+    expect(root.asNodeMapByProperty('id')).to.deep.equal({
       [root.id]: root,
       [a1.id]: a1
     })
@@ -61,11 +61,11 @@ describe('unit tests of Treeness', () => {
     expect(root.allChildren).to.deep.equal([a1, a2])
     expect(
       root
-        .asList()
+        .asNodeList()
         .map(it => it.name)
         .sort()
     ).to.deep.equal(['a1', 'a2', 'root'])
-    expect(root.asObjectByProperty('id')).to.deep.equal({
+    expect(root.asNodeMapByProperty('id')).to.deep.equal({
       [root.id]: root,
       [a1.id]: a1,
       [a2.id]: a2
@@ -84,18 +84,18 @@ describe('unit tests of Treeness', () => {
     expect(root.allChildren).to.deep.equal([a1, a2, a1b1])
     expect(
       root
-        .asList()
+        .asNodeList()
         .map(it => it.name)
         .sort()
     ).to.deep.equal(['a1', 'a1b1', 'a2', 'root'])
-    expect(root.asObjectByProperty('id')).to.deep.equal({
+    expect(root.asNodeMapByProperty('id')).to.deep.equal({
       [root.id]: root,
       [a1.id]: a1,
       [a2.id]: a2,
       [a1b1.id]: a1b1
     })
 
-    expect(root.asList(it => it.name).sort()).to.deep.equal([
+    expect(root.asNodeList(it => it.name).sort()).to.deep.equal([
       'a1',
       'a1b1',
       'a2',

@@ -170,20 +170,20 @@ const Treeness = Trait(
         )
       }
 
-      asList (nodeTransformerFn) {
+      asNodeList (nodeTransformerFn) {
         nodeTransformerFn = nodeTransformerFn || (it => it)
 
         return (this._children || []).reduce(
           (accum, child) => {
-            accum = accum.concat(child.asList(nodeTransformerFn))
+            accum = accum.concat(child.asNodeList(nodeTransformerFn))
             return accum
           },
           [nodeTransformerFn(this)]
         )
       }
 
-      asObjectByProperty (propertyName, nodeTransformerFn) {
-        return this.asList(nodeTransformerFn).reduce((object, node) => {
+      asNodeMapByProperty (propertyName, nodeTransformerFn) {
+        return this.asNodeList(nodeTransformerFn).reduce((object, node) => {
           object[node[propertyName]] = node
           return object
         }, {})
