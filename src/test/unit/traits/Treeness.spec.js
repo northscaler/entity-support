@@ -22,18 +22,19 @@ describe('unit tests of Treeness', () => {
 
         this.id = uuid()
         this.name = name
+        this._equalityComparator = eq
 
         if (parent) this.setParent(parent, eq)
       }
     }
 
-    for (const eq in [(x, y) => x === y, (x, y) => x.name === y.name]) {
+    for (const eq of [(x, y) => x === y, (x, y) => x.name === y.name]) {
       const root = new Node({ name: 'root', eq })
       expect(root.allChildren).to.deep.equal([])
       expect(root.asNodeList(it => it.name)).to.deep.equal([root.name])
       expect(root.asNodeMapByProperty('id')).to.deep.equal({ [root.id]: root })
 
-      const a1 = new Node({ parent: root, name: 'a1' })
+      const a1 = new Node({ parent: root, name: 'a1', eq })
       expect(root.containsChild(a1)).to.be.true()
       expect(a1.containedByParent(root)).to.be.true()
       expect(root.childCount).to.equal(1)
@@ -50,7 +51,7 @@ describe('unit tests of Treeness', () => {
         [a1.id]: a1
       })
 
-      const a2 = new Node({ parent: root, name: 'a2' })
+      const a2 = new Node({ parent: root, name: 'a2', eq })
       expect(root.containsChild(a2)).to.be.true()
       expect(a1.containedByParent(root)).to.be.true()
       expect(root.childCount).to.equal(2)
@@ -73,7 +74,7 @@ describe('unit tests of Treeness', () => {
       expect(() => a1.addChild(root)).to.throw(TreeCircularityError)
       expect(() => a1.addChild(a2)).to.throw(IllegalArgumentError)
 
-      const a1b1 = new Node({ parent: a1, name: 'a1b1' })
+      const a1b1 = new Node({ parent: a1, name: 'a1b1', eq })
       expect(root.containsChild(a1b1)).to.be.false()
       expect(root.containsChild(a1b1, true)).to.be.true()
       expect(a1b1.containedByParent(root)).to.be.false()

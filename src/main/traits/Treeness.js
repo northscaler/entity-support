@@ -14,6 +14,7 @@ const Treeness = Trait(
     class extends superclass {
       _parent
       _children = []
+      _equalityComparator = this._equalityComparator
 
       get isRoot () {
         return !this._parent
@@ -35,7 +36,7 @@ const Treeness = Trait(
         this.setParent(parent, identity)
       }
 
-      setParent (parent, equalityComparator = identity) {
+      setParent (parent, equalityComparator = this._equalityComparator) {
         if (!parent)
           throw new MissingRequiredArgumentError({ message: 'parent' })
 
@@ -76,7 +77,7 @@ const Treeness = Trait(
           })
       }
 
-      unsetParent (equalityComparator = identity) {
+      unsetParent (equalityComparator = this._equalityComparator) {
         // eslint-disable-next-line
         this._parent?.removeChild(this)
         return this
@@ -93,7 +94,11 @@ const Treeness = Trait(
         delete this._parent
       }
 
-      containsChild (child, recursively, equalityComparator = identity) {
+      containsChild (
+        child,
+        recursively,
+        equalityComparator = this._equalityComparator
+      ) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
         if (!this._children?.length) return false
         const contains = this._children.some(it =>
@@ -105,7 +110,11 @@ const Treeness = Trait(
         )
       }
 
-      containedByParent (parent, recursively, equalityComparator = identity) {
+      containedByParent (
+        parent,
+        recursively,
+        equalityComparator = this._equalityComparator
+      ) {
         if (!parent) throw new MissingRequiredArgumentError({ info: 'parent' })
         if (this.isRoot) return false
         const contained = equalityComparator(parent, this._parent)
@@ -118,7 +127,7 @@ const Treeness = Trait(
         return false
       }
 
-      addChild (child, equalityComparator = identity) {
+      addChild (child, equalityComparator = this._equalityComparator) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
         this._confirmIsThisType(child)
 
@@ -145,7 +154,7 @@ const Treeness = Trait(
         this._children.push(child)
       }
 
-      removeChild (child, equalityComparator = identity) {
+      removeChild (child, equalityComparator = this._equalityComparator) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
 
         this._testRemoveChild(child, equalityComparator)
