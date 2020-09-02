@@ -7,6 +7,8 @@ const {
 } = require('@northscaler/error-support')
 const { TreeCircularityError } = require('../errors')
 
+const identity = (that, other) => that === other
+
 const Treeness = Trait(
   superclass =>
     class extends superclass {
@@ -30,28 +32,32 @@ const Treeness = Trait(
       }
 
       set parent (parent) {
+        this.setParent(parent, identity)
+      }
+
+      setParent (parent, equalityComparator = identity) {
         if (!parent)
           throw new MissingRequiredArgumentError({ message: 'parent' })
 
-        this._testSetParent(parent)
-        parent._testAddChild(this)
+        this._testSetParent(parent, equalityComparator)
+        parent._testAddChild(this, equalityComparator)
 
         this._doSetParent(parent)
         parent._doAddChild(this)
       }
 
-      _testSetParent (parent) {
+      _testSetParent (parent, equalityComparator) {
         if (this._parent)
           throw new IllegalArgumentError({ message: 'this already has parent' })
         if (!parent) throw new MissingRequiredArgumentError({ info: 'parent' })
         this._confirmIsThisType(parent)
-        if (parent.identifies(this))
+        if (equalityComparator(parent, this))
           throw new TreeCircularityError({ message: 'parent is child' })
-        if (this.containsChild(parent, true))
+        if (this.containsChild(parent, true, equalityComparator))
           throw new TreeCircularityError({
             message: 'parent already contained by this'
           })
-        if (this.containdByParent(parent, true))
+        if (this.containedByParent(parent, true, equalityComparator))
           throw new TreeCircularityError({
             message: 'parent already contains this'
           })
@@ -70,14 +76,14 @@ const Treeness = Trait(
           })
       }
 
-      unsetParent () {
+      unsetParent (equalityComparator = identity) {
         // eslint-disable-next-line
         this._parent?.removeChild(this)
         return this
       }
 
-      _testUnsetParent (parent) {
-        if (!parent.identifies(this._parent))
+      _testUnsetParent (parent, equalityComparator) {
+        if (!equalityComparator(parent, this._parent))
           throw new IllegalArgumentError({
             message: 'this parent not given parent'
           })
@@ -87,42 +93,46 @@ const Treeness = Trait(
         delete this._parent
       }
 
-      containsChild (child, recursively) {
+      containsChild (child, recursively, equalityComparator = identity) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
         if (!this._children?.length) return false
-        const contains = !!this._children.some(it => it.identifies(child))
+        const contains = this._children.some(it =>
+          equalityComparator(child, it)
+        )
         if (contains || !recursively) return contains
-        return this._children.some(it => it.containsChild(child, recursively))
+        return this._children.some(it =>
+          it.containsChild(child, recursively, equalityComparator)
+        )
       }
 
-      containdByParent (parent, recursively) {
+      containedByParent (parent, recursively, equalityComparator = identity) {
         if (!parent) throw new MissingRequiredArgumentError({ info: 'parent' })
         if (this.isRoot) return false
-        const contained = parent.identifies(this._parent)
+        const contained = equalityComparator(parent, this._parent)
         if (contained || !recursively) return contained
         let p = this._parent.parent
         while (p) {
-          if (p.identifies(parent)) return true
+          if (equalityComparator(p, parent)) return true
           p = p.parent
         }
         return false
       }
 
-      addChild (child) {
+      addChild (child, equalityComparator = identity) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
         this._confirmIsThisType(child)
 
-        child.parent = this // delegate to setter
+        child.setParent(this, equalityComparator) // delegate to setter
         return this
       }
 
-      _testAddChild (child) {
+      _testAddChild (child, equalityComparator) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
-        if (this.containsChild(child, true))
+        if (this.containsChild(child, true, equalityComparator))
           throw new TreeCircularityError({
             message: 'this already contains child'
           })
-        if (this.containdByParent(child, true))
+        if (this.containedByParent(child, true, equalityComparator))
           throw new TreeCircularityError({
             message: 'this already contained by child'
           })
@@ -135,11 +145,11 @@ const Treeness = Trait(
         this._children.push(child)
       }
 
-      removeChild (child) {
+      removeChild (child, equalityComparator = identity) {
         if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
 
-        this._testRemoveChild(child)
-        child._testUnsetParent(this)
+        this._testRemoveChild(child, equalityComparator)
+        child._testUnsetParent(this, equalityComparator)
 
         this._doRemoveChild(child)
         child._doUnsetParent()
@@ -147,15 +157,17 @@ const Treeness = Trait(
         return this
       }
 
-      _testRemoveChild (child) {
-        if (!this.containsChild(child))
+      _testRemoveChild (child, equalityComparator) {
+        if (!this.containsChild(child, equalityComparator))
           throw new IllegalArgumentError({
             message: 'this does not contain child'
           })
       }
 
       _doRemoveChild (child) {
-        const i = this._children.indexOf(it => it.identifies(child))
+        const i = this._children.indexOf(it =>
+          this._equalityComparator(child, it)
+        )
         this._children.splice(i, 1)
       }
 
