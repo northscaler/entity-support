@@ -174,7 +174,7 @@ const Treeness = Trait(
       }
 
       _doRemoveChild (child) {
-        const i = this._children.indexOf(it =>
+        const i = this._children.findIndex(it =>
           this._equalityComparator(child, it)
         )
         this._children.splice(i, 1)

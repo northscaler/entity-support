@@ -109,6 +109,8 @@ describe('unit tests of Treeness', () => {
       root.removeChild(a1)
       expect(a1.parent).not.to.be.ok()
       expect(root.children.includes(a1)).to.be.false()
+      expect(root.allChildren.includes(a1b1)).to.be.false()
+      expect(a1.isRoot).to.be.true()
 
       class NotNode {}
 
