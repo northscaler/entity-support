@@ -13,16 +13,17 @@ describe('unit tests of Location', function () {
       streetNumber: '1',
       streetName: 'Mulberry',
       streetType: 'St.',
-      streetDirectionPrefix: 'NW',
+      streetNameDirectionPrefix: 'NW',
       compartmentType: 'Ste.',
       compartmentId: '100A',
       city: 'Metroville',
       state: 'TX',
-      zip: '78737'
+      zip: '78737',
+      zipPlus4: '4321'
     })
 
     expect(addr.toString()).to.equal(
-      '1 NW Mulberry St., Ste. 100A\nMetroville, TX 78737'
+      '1 NW Mulberry St., Ste. 100A\nMetroville, TX 78737-4321'
     )
   })
 })

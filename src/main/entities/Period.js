@@ -9,10 +9,7 @@ const { IllegalArgumentError } = require('@northscaler/error-support')
  */
 class Period {
   static beginningAtWithMinutes (begin, minutes) {
-    return new Period(
-      begin.clone(),
-      begin.clone().add(minutes, TimeUnit.MINUTE.key)
-    )
+    return new Period(begin.clone(), begin.clone().add(minutes, TimeUnit.MINUTE.key))
   }
 
   static compare (a, b) {
@@ -34,7 +31,7 @@ class Period {
   }
 
   static equal (a, b) {
-    return Period.compare(a, b) === 0 // this just happens to work for this class; it doesn't work in general
+    return Period.compare(a, b) === 0
   }
 
   /**
@@ -88,8 +85,9 @@ class Period {
   _testSetBegin (value) {
     if (!value) return value
     value = moment(value).utc()
-    if (!value.isValid() || this._end?.isBefore(value))
+    if (!value.isValid() || this._end?.isBefore(value)) {
       throw new IllegalArgumentError(`value: ${value}`)
+    }
     return value
   }
 
@@ -109,8 +107,9 @@ class Period {
   _testSetEnd (value) {
     if (!value) return value
     value = moment(value).utc()
-    if (!value.isValid() || this._begin?.isAfter(value))
+    if (!value.isValid() || this._begin?.isAfter(value)) {
       throw new IllegalArgumentError(`value: ${value}`)
+    }
     return value
   }
 

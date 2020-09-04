@@ -1,11 +1,7 @@
 'use strict'
 
 const property = require('@northscaler/property-decorator')
-const {
-  IllegalArgumentError,
-  MissingRequiredArgumentError,
-  MethodNotImplementedError
-} = require('@northscaler/error-support')
+const { IllegalArgumentError, MissingRequiredArgumentError, MethodNotImplementedError } = require('@northscaler/error-support')
 const CardinalDirection = require('../enums/CardinalDirection')
 
 class Parallel {
@@ -35,21 +31,17 @@ class Parallel {
 
   _testSetDegrees (degrees) {
     degrees = parseFloat(degrees)
-    if (isNaN(degrees) || degrees < -this.max || degrees > this.max)
+    if (isNaN(degrees) || degrees < -this.max || degrees > this.max) {
       throw new IllegalArgumentError({
         info: 'degrees',
         message: `only between -${this.max} and ${this.max} inclusive allowed`
       })
+    }
     return degrees
   }
 
   toString (format) {
-    switch (
-      (format || '')
-        .toString()
-        .trim()
-        .toLowerCase()
-    ) {
+    switch ((format || '').toString().trim().toLowerCase()) {
       case 'dd': // unsigned degrees plus direction
         return `${Math.abs(this.degrees)}\xB0${this.direction.name}`
       case 'd': // signed decimal degrees
@@ -58,9 +50,7 @@ class Parallel {
         return `${this.degrees}\xB0${parseInt(this.minutes)}'${this.seconds}"`
       default:
         // unsigned degrees, minutes, seconds plus direction
-        return `${Math.abs(this.degrees)}\xB0${parseInt(this.minutes)}'${
-          this.seconds
-        }"${this.direction.name}`
+        return `${Math.abs(this.degrees)}\xB0${parseInt(this.minutes)}'${this.seconds}"${this.direction.name}`
     }
   }
 }
@@ -104,57 +94,63 @@ class StreetAddress {
   _buildingName // some addresses have building names instead of street numbers
 
   @property()
-  _streetNumberSuffix // A, ½, etc
+  _streetNumberSuffix // A, ½, ...
 
   @property()
-  _streetDirectionPrefix // N, SW, etc
+  _streetNameDirectionPrefix // N, SW, ...
 
   @property()
   _streetName // Mulberry, ...
 
   @property()
-  _streetType // boulevard, street, place, lane, etc
+  _streetNameDirectionSuffix // N, SW, ...
 
   @property()
-  _streetDirectionSuffix // N, SW, etc
+  _streetType // boulevard, street, place, lane, ...
 
   @property()
-  _compartmentType // po box, apartment, floor, suite, etc
+  _streetTypeDirectionSuffix // N, SW, ...
 
   @property()
-  _compartmentId // 123, 1A, etc
+  _compartmentType // po box, apartment, floor, suite, ...
 
   @property()
-  _localMunicipality // if appears in address before the city
+  _compartmentId // 123, 1A, ...
+
+  @property()
+  _localMunicipality // if it appears in address before the city
 
   @property()
   _city // Metroville, ...
 
   @property()
-  _governingDistrict // state in US, province in CA, distrito federal ein MX, ...
+  _governingDistrict // state in US, province in CA, distrito federal in MX, ...
 
   @property()
   _postalCode // 34213 in US, ...
 
   @property()
+  _postalCodeSuffixSeparator
+
+  @property()
   _postalCodeSuffix // US plus-four, ...
 
   @property()
-  _country // US, CA, MX, ... (also determines formatted rendering)
+  _country // US, CA, MX, ...
 }
 
 class UsStreetAddress extends StreetAddress {
   constructor ({
     streetNumber, // 123
     streetNumberSuffix, // A, ½, ...
-    streetDirectionPrefix, // N, SW, ...
+    streetNameDirectionPrefix, // N, SW, ...
     streetName, // Mulberry
-    streetDirectionSuffix, // N, SW, ...
+    streetNameDirectionSuffix, // N, SW, ...
     streetType, // St, Ave, Blvd, ...
     streetTypeDirectionSuffix, // N, SW, ...
     compartmentType, // Suite, Apartment, ...
     compartmentId, // 1A, 200, ...
-    city, // Metroville
+    city, // Austin
     state, // TX
     zip, // 12345
     zipPlus4 // 4321
@@ -162,10 +158,10 @@ class UsStreetAddress extends StreetAddress {
     super()
 
     this.streetNumber = streetNumber
-    this.streetDirectionPrefix = streetDirectionPrefix
+    this.streetNameDirectionPrefix = streetNameDirectionPrefix
     this.streetNumberSuffix = streetNumberSuffix
     this.streetName = streetName
-    this.streetDirectionSuffix = streetDirectionSuffix
+    this.streetNameDirectionSuffix = streetNameDirectionSuffix
     this.streetType = streetType
     this.streetTypeDirectionSuffix = streetTypeDirectionSuffix
     this.compartmentType = compartmentType
@@ -175,6 +171,7 @@ class UsStreetAddress extends StreetAddress {
     this.postalCode = zip
     this.postalCodeSuffix = zipPlus4
     this.country = 'US'
+    this.postalCodeSuffixSeparator = '-'
   }
 
   _testSetStreetNumber (it) {
@@ -193,52 +190,49 @@ class UsStreetAddress extends StreetAddress {
   }
 
   _testSetGoverningDistrict (it) {
+    const rx = /^[A-Z]{2}$/
     if (!it) throw new MissingRequiredArgumentError({ info: 'state' })
-    if (!/^[A-Z]{2}$/.test('' + it))
-      throw new IllegalArgumentError({
-        info: 'state',
-        message: 'must be two upper case chars'
-      })
+    if (!rx.test('' + it)) {
+      throw new IllegalArgumentError({ info: 'state', message: `must be ${rx}` })
+    }
     return it
   }
 
   _testSetPostalCode (it) {
+    const rx = /^[0-9]{5}$/
     if (!it) throw new MissingRequiredArgumentError({ info: 'zip' })
-    if (!/^[0-9]{5}$/.test(it))
-      throw new IllegalArgumentError({
-        info: 'zip',
-        message: 'must be five digits'
-      })
+    if (!rx.test(it)) {
+      throw new IllegalArgumentError({ info: 'zip', message: `must be ${rx}` })
+    }
     return it
   }
 
   _testSetPostalCodeSuffix (it) {
-    if (it && !/^[0-9]{4}$/.test(it))
-      throw new IllegalArgumentError({
-        info: 'zipPlus4',
-        message: 'must be four digits'
-      })
+    const rx = /^[0-9]{4}$/
+    if (it && !rx.test(it)) {
+      throw new IllegalArgumentError({ info: 'zipPlus4', message: `must be ${rx}` })
+    }
     return it
   }
 
-  _checkDirection (it, property) {
+  _testDirection (it, property) {
+    const rx = /^(N|S|E|W|NW|NE|SW|SE)$/
     if (!it) return it
-    if (!/^(N|S|E|W|NW|NE|SW|SE)$/.test(it))
-      throw new IllegalArgumentError({ info: property })
+    if (!rx.test(it)) { throw new IllegalArgumentError({ info: property, message: `must be ${rx}` }) }
   }
 
-  _testSetStreetDirectionPrefix (it) {
-    this._checkDirection(it, 'streetDirectionPrefix')
+  _testSetStreetNameDirectionPrefix (it) {
+    this._testDirection(it, 'streetNameDirectionPrefix')
     return it
   }
 
-  _testSetStreetDirectionSuffix (it) {
-    this._checkDirection(it, 'streetDirectionSuffix')
+  _testSetStreetNameDirectionSuffix (it) {
+    this._testDirection(it, 'streetNameDirectionSuffix')
     return it
   }
 
   _testSetStreetTypeDirectionSuffix (it) {
-    this._checkDirection(it, 'streetTypeDirectionSuffix')
+    this._testDirection(it, 'streetTypeDirectionSuffix')
     return it
   }
 
@@ -246,23 +240,19 @@ class UsStreetAddress extends StreetAddress {
     lineSeparator = '\n',
     compartmentSeparator = ', ',
     cityStateSeparator = ', ',
-    stateZipSeparator = ' ',
-    zipPlus4Separator = '-'
+    stateZipSeparator = ' '
   } = {}) {
     let it = `${this.streetNumber}`
     if (this.streetNumberSuffix) it += this.streetNumberSuffix
-    if (this.streetDirectionPrefix) it += ` ${this.streetDirectionPrefix}`
+    if (this.streetNameDirectionPrefix) it += ` ${this.streetNameDirectionPrefix}`
     it += ` ${this.streetName}`
-    if (this.streetDirectionSuffix) it += ` ${this.streetDirectionSuffix}`
+    if (this.streetNameDirectionSuffix) it += ` ${this.streetNameDirectionSuffix}`
     if (this.streetType) it += ` ${this.streetType}`
-    if (this.streetTypeDirectionSuffix)
-      it += ` ${this.streetTypeDirectionSuffix}`
-    if (this.compartmentType)
-      it += `${compartmentSeparator}${this.compartmentType} ${this.compartmentId}`
+    if (this.streetTypeDirectionSuffix) { it += ` ${this.streetTypeDirectionSuffix}` }
+    if (this.compartmentType) { it += `${compartmentSeparator}${this.compartmentType} ${this.compartmentId}` }
     it += lineSeparator
     it += `${this.city}${cityStateSeparator}${this.governingDistrict}${stateZipSeparator}${this.postalCode}`
-    if (this.postalCodeSuffix)
-      it += `${zipPlus4Separator}${this.postalCodeSuffix}`
+    if (this.postalCodeSuffix) { it += `${this.postalCodeSuffixSeparator}${this.postalCodeSuffix}` }
 
     return it
   }

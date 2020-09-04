@@ -1,16 +1,8 @@
 'use strict'
 
-const ALL_HOURS = Object.freeze(
-  Array(24)
-    .fill(0)
-    .map((it, i) => i)
-)
+const ALL_HOURS = Object.freeze(Array(24).fill(0).map((it, i) => i))
 
-const ALL_MINUTES = Object.freeze(
-  Array(60)
-    .fill(0)
-    .map((it, i) => i)
-)
+const ALL_MINUTES = Object.freeze(Array(60).fill(0).map((it, i) => i))
 
 const arrayify = it => {
   if (it === null || it === undefined) return it
@@ -123,23 +115,19 @@ class Recurrence {
       daysOfWeek = recurrence.daysOfWeek.map(day => day.ordinal)
     }
     const recurrences = {
-      m:
-        !recurrence.minutes && !recurrence.hours
-          ? ALL_MINUTES
-          : recurrence.minutes,
-      h:
-        !recurrence.minutes && !recurrence.hours ? ALL_HOURS : recurrence.hours,
+      m: !recurrence.minutes && !recurrence.hours ? ALL_MINUTES : recurrence.minutes,
+      h: !recurrence.minutes && !recurrence.hours ? ALL_HOURS : recurrence.hours,
       D: recurrence.daysOfMonth,
       dw: daysOfWeek,
       dc: recurrence.dayOfWeekCounts,
       M: recurrence.months
     }
 
-    return Object.keys(recurrences).reduce((accum, it) => {
-      if (recurrences[it] === null || recurrences[it] === undefined)
-        delete recurrences[it]
-      return accum
-    }, recurrences)
+    return Object.keys(recurrences)
+      .reduce((accum, it) => {
+        if (recurrences[it] === null || recurrences[it] === undefined) { delete recurrences[it] }
+        return accum
+      }, recurrences)
   }
 }
 

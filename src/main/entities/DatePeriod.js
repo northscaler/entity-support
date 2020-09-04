@@ -26,8 +26,7 @@ class DatePeriod extends Period {
     if (!value) return value
     value = moment.utc(value)
     DatePeriod._checkGranularity(value)
-    if (!value.isValid() || this._end?.isBefore(value))
-      throw new IllegalArgumentError(`value:${value}`)
+    if (!value.isValid() || this._end?.isBefore(value)) { throw new IllegalArgumentError(`value:${value}`) }
     return value
   }
 
@@ -35,19 +34,13 @@ class DatePeriod extends Period {
     if (!value) return value
     value = moment.utc(value)
     DatePeriod._checkGranularity(value)
-    if (!value.isValid() || this._begin?.isAfter(value))
-      throw new IllegalArgumentError(`value:${value}`)
+    if (!value.isValid() || this._begin?.isAfter(value)) { throw new IllegalArgumentError(`value:${value}`) }
     return value
   }
 
   static _checkGranularity (value) {
-    if (
-      value.valueOf() !==
-      moment
-        .utc({ year: value.year(), month: value.month(), date: value.date() })
-        .valueOf()
-    ) {
-      throw new IllegalArgumentError(`value:${value}`)
+    if (value.valueOf() !== moment.utc({ year: value.year(), month: value.month(), date: value.date() }).valueOf()) {
+      throw new IllegalArgumentError({ message: 'value', info: { value } })
     }
   }
 }
