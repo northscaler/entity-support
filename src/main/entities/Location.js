@@ -53,6 +53,10 @@ class Parallel {
         return `${Math.abs(this.degrees)}\xB0${parseInt(this.minutes)}'${this.seconds}"${this.direction.name}`
     }
   }
+
+  clone () {
+    return new Parallel(this._degrees, this._max)
+  }
 }
 
 class Longitude extends Parallel {
@@ -67,7 +71,7 @@ class Latitude extends Parallel {
   }
 }
 
-class GpsCoordinate {
+class Gps {
   @property()
   _lat
 
@@ -75,12 +79,26 @@ class GpsCoordinate {
   _lon
 
   constructor ({ lat, lon }) {
-    this.lat = lat
-    this.lon = lon
+    this.lat = typeof lat === 'number' ? new Latitude(lat) : lat
+    this.lon = typeof lon === 'number' ? new Longitude(lon) : lon
+  }
+
+  _testSetLat (lat) {
+    lat = typeof lat === 'number' ? new Latitude(lat) : lat
+    return lat
+  }
+
+  _testSetLon (lon) {
+    lon = typeof lon === 'number' ? new Longitude(lon) : lon
+    return lon
   }
 
   toString (format) {
     return `${this.lat.toString(format)} ${this.lon.toString(format)}`
+  }
+
+  clone () {
+    return new Gps({ lat: this._lat.clone(), lon: this._lon.clone() })
   }
 }
 
@@ -137,6 +155,13 @@ class StreetAddress {
 
   @property()
   _country // US, CA, MX, ...
+
+  clone () {
+    return Object.keys(this).reduce((it, key) => {
+      it[key] = this[key]
+      return it
+    }, Object.create({}, Object.getPrototypeOf(this)))
+  }
 }
 
 class UsStreetAddress extends StreetAddress {
@@ -261,7 +286,7 @@ class UsStreetAddress extends StreetAddress {
 module.exports = {
   Longitude,
   Latitude,
-  GpsCoordinate,
+  Gps,
   StreetAddress,
   UsStreetAddress,
   Parallel

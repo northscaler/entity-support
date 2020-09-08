@@ -6,5 +6,7 @@ module.exports = {
   IdentifiableByString: require('./IdentifiableByString'),
   Nameable: require('./Nameable'),
   Versionable: require('./Versionable'),
-  Treeness: require('./Treeness')
+  Treeness: require('./Treeness'),
+  HasGps: require('./HasGps'),
+  HasStreetAddress: require('./HasStreetAddress')
 }
