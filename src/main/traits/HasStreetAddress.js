@@ -14,7 +14,7 @@ const HasStreetAddress = Trait(superclass =>
     _streetAddress
 
     _testSetStreetAddress (streetAddress) {
-      if (!(streetAddress instanceof StreetAddress)) {
+      if (streetAddress && !(streetAddress instanceof StreetAddress)) {
         throw new IllegalArgumentError({ message: 'StreetAddress required', info: { streetAddress } })
       }
       return streetAddress.clone()

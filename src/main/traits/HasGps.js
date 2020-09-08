@@ -14,7 +14,7 @@ const HasGps = Trait(superclass =>
     _gps
 
     _testSetGps (gps) {
-      if (!(gps instanceof Gps)) {
+      if (gps && !(gps instanceof Gps)) {
         throw new IllegalArgumentError({ message: 'Gps required', info: { gps } })
       }
       return gps.clone()
