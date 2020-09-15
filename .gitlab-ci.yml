@@ -1,8 +1,3 @@
-.authenticate-to-package-registry:
-  - &authenticate-to-package-registry |
-    echo "$NPM_SCOPE:registry=https://$NPM_REGISTRY_HOST/" >> ~/.npmrc
-    echo "//$NPM_REGISTRY_HOST/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-
 before_script:
   - node --version
   - npm --version
@@ -45,11 +40,16 @@ publish:
   stage: publish
   image: node:10.0.0-alpine
   script:
-    - *authenticate-to-package-registry
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://gitlab.com/api/v4/packages/npm/
+    - npm config set //gitlab.com/api/v4/packages/npm/:_authToken ${CI_JOB_TOKEN}
+    - npm config set //gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken ${CI_JOB_TOKEN}
     - npm ci
     - npm run make-distribution
-    - export RM_TMP_TAG=cicd-$(date +%s)
-    - npm publish --access public --tag $RM_TMP_TAG
-    - ./tag-nodejs
+    # TODO: uncomment stuff below when gitlab fixes their `npm dist-tags` bug.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/121668#note_335895866 & https://gitlab.com/gitlab-org/gitlab/-/issues/220985
+    # export RM_TMP_TAG=cicd-$(date +%s)
+    - npm publish --verbose # --tag $RM_TMP_TAG
+    # ./tag-nodejs
   only:
     - /^\d+\.\d+\.\d+(\-[^\.]+\.\d+)?$/
