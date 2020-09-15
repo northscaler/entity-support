@@ -38,7 +38,7 @@ build-14.0.0:
 
 publish:
   stage: publish
-  image: node:10.0.0-alpine
+  image: node:12-alpine
   script:
     - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
     - npm config set $NPM_SCOPE:registry https://gitlab.com/api/v4/packages/npm/
