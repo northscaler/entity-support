@@ -64,6 +64,7 @@
     "@northscaler/mutrait": "1.2.3",
     "@northscaler/property-decorator": "0.1.0-pre.6",
     "lodash.isequal": "4.5.0",
+    "semver": "7.3.2",
     "uuid": "8.3.0"
   },
   "devDependencies": {

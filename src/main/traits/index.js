@@ -8,5 +8,6 @@ module.exports = {
   Versionable: require('./Versionable'),
   Treeness: require('./Treeness'),
   HasGps: require('./HasGps'),
-  HasStreetAddress: require('./HasStreetAddress')
+  HasStreetAddress: require('./HasStreetAddress'),
+  SemanticallyVersionable: require('./SemanticallyVersionable')
 }
