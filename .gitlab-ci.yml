@@ -5,6 +5,7 @@ before_script:
 stages:
   - build
   - publish
+  - tag
 
 build-10.3.0:
   image: node:10.3.0-alpine
@@ -46,8 +47,20 @@ publish:
     - npm config set //gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken ${NPM_GITLAB_PACKAGE_REGISTRY_WRITE_TOKEN}
     - npm ci
     - npm run make-distribution
-    - export RM_TMP_TAG=cicd-$(date +%s)
+    - export RM_TMP_TAG=$CI_COMMIT_SHORT_SHA
     - npm publish --verbose --tag $RM_TMP_TAG
+  only:
+    - /^\d+\.\d+\.\d+(\-[^\.]+\.\d+)?$/
+
+tag:
+  stage: tag
+  image: node:12-alpine
+  script:
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://gitlab.com/api/v4/packages/npm/
+    - npm config set //gitlab.com/api/v4/packages/npm/:_authToken ${NPM_GITLAB_PACKAGE_REGISTRY_WRITE_TOKEN}
+    - npm config set //gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken ${NPM_GITLAB_PACKAGE_REGISTRY_WRITE_TOKEN}
+    - export RM_TMP_TAG=$CI_COMMIT_SHORT_SHA
     - ./tag-nodejs
   only:
     - /^\d+\.\d+\.\d+(\-[^\.]+\.\d+)?$/
