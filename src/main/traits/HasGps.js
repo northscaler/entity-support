@@ -6,7 +6,7 @@ const { IllegalArgumentError } = require('@northscaler/error-support')
 const { Gps } = require('../entities/Location')
 
 /**
- * Imparts a `gps` property with backing property `_gps` supporting {@link GpsCoordinate}.
+ * Imparts a `gps` property with backing property `_gps` supporting {@link Gps}.
  */
 const HasGps = Trait(superclass =>
   class extends superclass {
