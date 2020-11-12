@@ -1,6 +1,6 @@
 {
   "name": "@northscaler/entity-support",
-  "version": "0.2.2",
+  "version": "0.2.3-rc.0",
   "description": "Support library for persistent domain entities",
   "homepage": "https://gitlab.com/northscaler-public/entity-support",
   "repository": {
