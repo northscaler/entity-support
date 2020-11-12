@@ -10,7 +10,7 @@ const Treeness = Trait(superclass =>
   class extends superclass {
     _parent
     _children = []
-    _equalityComparator = this._equalityComparator
+    _equalityComparator = Treeness.DEFAULT_EQUALITY_COMPARATOR
 
     get isRoot () {
       return !this._parent
@@ -32,7 +32,7 @@ const Treeness = Trait(superclass =>
       this.setParent(parent, identity)
     }
 
-    setParent (parent, equalityComparator = this._equalityComparator) {
+    setParent (parent, equalityComparator = parent._equalityComparator) {
       if (!parent) { throw new MissingRequiredArgumentError({ message: 'parent' }) }
 
       this._testSetParent(parent, equalityComparator)
@@ -47,7 +47,7 @@ const Treeness = Trait(superclass =>
         throw new IllegalArgumentError({ message: 'this already has a parent' })
       }
       if (!parent) {
-        throw new MissingRequiredArgumentError({ info: 'parent' })
+        throw new MissingRequiredArgumentError({ message: 'parent required' })
       }
       this._checkThisIsSameTypeAs(parent)
       if (equalityComparator(parent, this)) {
@@ -59,11 +59,24 @@ const Treeness = Trait(superclass =>
       if (this.containedByParent(parent, true, equalityComparator)) {
         throw new TreeCircularityError({ message: 'parent already contains this' })
       }
+      if (parent.existsInTree(this, equalityComparator)) {
+        throw new TreeCircularityError({ message: 'this already exists in tree' })
+      }
       return parent
     }
 
     _doSetParent (parent) {
       this._parent = parent
+    }
+
+    get root () {
+      let node = this
+      while (!node.isRoot) node = node.parent
+      return node
+    }
+
+    existsInTree (node, equalityComparator = this._equalityComparator) {
+      return this.root.containsChild(node, { recursively: true, equalityComparator })
     }
 
     _checkThisIsSameTypeAs (that) {
@@ -89,7 +102,7 @@ const Treeness = Trait(superclass =>
     }
 
     containsChild (child, {
-      recursively,
+      recursively = true,
       equalityComparator = this._equalityComparator
     } = {}) {
       if (!child) throw new MissingRequiredArgumentError({ info: 'child' })
@@ -104,7 +117,7 @@ const Treeness = Trait(superclass =>
     }
 
     containedByParent (parent, {
-      recursively,
+      recursively = true,
       equalityComparator = this._equalityComparator
     } = {}) {
       if (!parent) throw new MissingRequiredArgumentError({ info: 'parent' })
@@ -210,5 +223,7 @@ const Treeness = Trait(superclass =>
     }
   }
 )
+
+Treeness.DEFAULT_EQUALITY_COMPARATOR = (that, other) => that === other || that?.id === other?.id
 
 module.exports = Treeness
