@@ -47,8 +47,6 @@ publish:
     - npm ci
     - npm run make-distribution
     - npm publish --verbose --tag $CI_COMMIT_SHORT_SHA
-    # TODO: uncomment stuff below when gitlab fixes their `npm dist-tags` bug.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/121668#note_335895866 & https://gitlab.com/gitlab-org/gitlab/-/issues/220985
-    # ./tag-nodejs
+    - ./tag-nodejs
   only:
     - /^\d+\.\d+\.\d+(\-[^\.]+\.\d+)?$/
