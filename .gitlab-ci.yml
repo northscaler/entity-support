@@ -3,7 +3,7 @@ before_script:
   - npm --version
 
 variables:
-  CLOUDSMITH_API_KEY=$CLOUDSMITH_API_KEY
+  CLOUDSMITH_API_KEY: $CLOUDSMITH_API_KEY
 
 stages:
   - build
