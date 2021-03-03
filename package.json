@@ -50,8 +50,7 @@
     "index.js"
   ],
   "publishConfig": {
-    "access": "restricted",
-    "@northscaler:registry": "https://gitlab.com/api/v4/projects/20673526/packages/npm/"
+    "access": "restricted"
   },
   "peerDependencies": {
     "moment-timezone": ">=0.5.31"
