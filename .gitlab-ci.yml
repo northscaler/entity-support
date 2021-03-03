@@ -13,30 +13,45 @@ build-10.3.0:
   image: node:10.3.0-alpine
   stage: build
   script:
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/npm/
+    - npm config set //npm.cloudsmith.io/northscaler/npm/:_authToken ${CLOUDSMITH_API_KEY}
     - npm run build
 
 build-11.0.0:
   image: node:11.0.0-alpine
   stage: build
   script:
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/npm/
+    - npm config set //npm.cloudsmith.io/northscaler/npm/:_authToken ${CLOUDSMITH_API_KEY}
     - npm run build
 
 build-12.0.0:
   image: node:12.0.0-alpine
   stage: build
   script:
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/npm/
+    - npm config set //npm.cloudsmith.io/northscaler/npm/:_authToken ${CLOUDSMITH_API_KEY}
     - npm run build
 
 build-13.7.0:
   image: node:13.7.0-alpine
   stage: build
   script:
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/npm/
+    - npm config set //npm.cloudsmith.io/northscaler/npm/:_authToken ${CLOUDSMITH_API_KEY}
     - npm run build
 
 build-14.0.0:
   image: node:14.0.0-alpine
   stage: build
   script:
+    - export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
+    - npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/npm/
+    - npm config set //npm.cloudsmith.io/northscaler/npm/:_authToken ${CLOUDSMITH_API_KEY}
     - npm run build
 
 publish:
