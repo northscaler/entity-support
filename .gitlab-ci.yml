@@ -57,7 +57,7 @@ publish:
     - *authenticate-npm
     - npm ci
     - npm run make-distribution
-    - npm publish --verbose --tag $CI_COMMIT_SHORT_SHA
-    - RM_TMP_TAG=$CI_COMMIT_SHORT_SHA RM_KEEP_TMP_TAG=1 ./tag-nodejs
+    - npm publish --verbose --tag sha-$CI_COMMIT_SHORT_SHA
+    - RM_TMP_TAG=sha-$CI_COMMIT_SHORT_SHA RM_KEEP_TMP_TAG=1 ./tag-nodejs
   only:
     - /^\d+\.\d+\.\d+(\-[^\.]+\.\d+)?$/
