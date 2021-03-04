@@ -1,8 +1,8 @@
 .authenticate-npm:
   - &authenticate-npm |
     export NPM_SCOPE=$(node -e 'console.log(require("./package.json").name.split("/")[0])')
-    npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/npm/
-    npm config set //npm.cloudsmith.io/northscaler/npm/:_authToken ${CLOUDSMITH_API_KEY}
+    npm config set $NPM_SCOPE:registry https://npm.cloudsmith.io/northscaler/protected/
+    npm config set //npm.cloudsmith.io/northscaler/protected/:_authToken ${CLOUDSMITH_API_KEY}
 
 before_script:
   - node --version
