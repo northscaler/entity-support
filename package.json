@@ -50,7 +50,7 @@
     "index.js"
   ],
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
   },
   "peerDependencies": {
     "moment-timezone": ">=0.5.31"
