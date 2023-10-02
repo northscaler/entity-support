@@ -86,7 +86,7 @@
     "fs-extra": "9.0.1",
     "husky": "4.3.0",
     "intercept-stdout": "0.1.2",
-    "jsdoc": "3.6.6",
+    "jsdoc": "3.6.11",
     "lodash.template": "4.5.0",
     "mocha": "8.2.1",
     "moment-timezone": "0.5.31",
